@@ -11,12 +11,15 @@
 
 -- Monomials are represented only by their exponent pairs.
 -- For example {2,1} means x^2 y.
+-- Some of the small helpers below could be replaced by built-in Macaulay2 list or hash-table operations.
+-- They are kept explicit so that the code mirrors the mathematics used in the thesis: exponent addition, monomial divisibility, sparse linear equations and weight multisets.
 vwContains = (L, x) -> (
     found := false;
     for y in L do if y == x then found = true;
     found
 );
 
+-- This could be replaced by unique L, but the explicit version makes the multiset comparison below self-contained.
 uniqueList = L -> (
     ans := {};
     for x in L do if not vwContains(ans, x) then ans = append(ans, x);
@@ -38,6 +41,7 @@ expKey = e -> concatenate(toString(e#0), ",", toString(e#1));
 varKey = v -> concatenate(v#0, ":", toString(v#1), ":", expKey(v#2));
 
 -- Rows are stored sparsely as hash tables: column index -> coefficient.
+-- Macaulay2 can build matrices directly, but sparse rows keep the syzygy and compatibility equations visible as equations in named variables.
 nonzeroRow = rowVec -> (
     ok := false;
     for a in rowVec do if a != 0 then ok = true;
@@ -53,6 +57,7 @@ counterAdd = (H, key, amount) -> (
 );
 
 -- These counters are multisets of weights. We need multiplicities, not just the set of weights that occur.
+-- The counter language is used to match the statement of the theorem: each torus weight appears with a multiplicity.
 counterGet = (H, key) -> if H#?key then H#key else 0;
 
 counterEquals = (A,B) -> (
