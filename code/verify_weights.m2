@@ -1,7 +1,8 @@
 -- Chenyang Zhao Master Thesis
 -- Macaulay2 verification of the torus weights in the tangent space of Hilb^{n,n+1}(A^2) at monomial nested fixed points.
--- The script computes the compatibility kernel: ker( Hom(I,R/I) ++ Hom(J,R/J) --> Hom(I,R/J) )
--- Using monomial generators, monomial bases and the lcm syzygies among generators of a monomial ideal in two variables. It then compares the resulting weight multiset with the row-and-column shortening rule.
+-- The script computes the compatibility kernel ker( Hom(I,R/I) ++ Hom(J,R/J) --> Hom(I,R/J) ).
+-- It builds this kernel from monomial generators, quotient monomial bases and the lcm syzygies among generators of a monomial ideal in two variables.
+-- It then compares the resulting weight multiset with the row-and-column shortening rule.
 -- Convention: the geometric torus acts by (q,t).(a,b)=(qa,tb). If a map sends a source monomial x^i y^j to a target monomial x^r y^s, its weight is (i-r,j-s), written additively.
 -- We first print one concrete showcase example, then run the full finite check. To change the bound, edit MAXSIZE at the bottom of the file.
 
@@ -233,7 +234,9 @@ homSyzygyRows = (prefix, gens, basis, varIndex) -> (
 ----------------------------------------
 
 -- Compute the torus-weight multiset of the actual nested tangent space.
--- Here big = lambda and small = mu = lambda minus one corner. This function builds the compatibility kernel: ker( Hom(I_big,R/I_big) ++ Hom(I_small,R/I_small) -> Hom(I_big,R/I_small) ).
+-- Here big = lambda is the larger Young diagram, and small = mu is lambda minus one corner.
+-- In the thesis notation, if |big|=n+1 then the fixed point lies in Hilb^{n,n+1}(A^2).
+-- This function builds the compatibility kernel ker( Hom(I_big,R/I_big) ++ Hom(I_small,R/I_small) -> Hom(I_big,R/I_small) ).
 -- The output is a multiset of additive weights, such as "2,-1" for q^2 t^{-1}.
 kernelWeightMultiset = (big, small) -> (
     gensBig := minimalGenerators big;
@@ -259,7 +262,9 @@ kernelWeightMultiset = (big, small) -> (
     rows = rows | homSyzygyRows("alpha", gensBig, basisBig, varIndex);
     rows = rows | homSyzygyRows("beta", gensSmall, basisSmall, varIndex);
 
-    -- Compatibility pi alpha(g)=beta(g) for each minimal generator g of I_big. Since I_big is contained in I_small, every generator g of I_big is a monomial multiple of some generator h of I_small.  If g = x^r y^s h, then beta(g) is x^r y^s beta(h).
+    -- Compatibility pi alpha(g)=beta(g) for each minimal generator g of I_big.
+    -- Since I_big is contained in I_small, every generator g of I_big is a monomial multiple of some generator h of I_small.
+    -- If g = x^r y^s h, then beta(g) is x^r y^s beta(h).  If there is more than one possible h, the lcm-syzygy equations for beta make these choices agree.
     if #gensBig > 0 then (
         for i from 0 to #gensBig - 1 do (
             g := gensBig#i;
@@ -311,7 +316,8 @@ kernelWeightMultiset = (big, small) -> (
     for k in keys varsByWeight do (
         cols := varsByWeight#k;
         relevantRows := {};
-        -- The equations are homogeneous for the torus action, so each weight can be treated separately. For this weight block, dim kernel = number of variables - rank of equations.
+        -- The equations are homogeneous for the torus action, so each weight can be treated separately.
+        -- For this weight block, dim kernel = number of variables - rank of equations, computed over QQ since all coefficients are 0, 1 or -1.
         for row in rows do (
             rowVec := {};
             for p from 0 to #cols - 1 do (
@@ -342,6 +348,7 @@ formulaWeightMultiset = (big, corner) -> (
         w1 := {a + 1, -ell};
         w2 := {-a, ell + 1};
         -- Nested condition: shorten horizontal arrows left of the corner by one q, and vertical arrows below the corner by one t.
+        -- In additive notation this subtracts 1 from the corresponding q- or t-exponent.
         if j == cj and i < ci then w1 = {a, -ell};       -- boxes left of the corner
         if i == ci and j < cj then w2 = {-a, ell};       -- boxes below the corner
         counterAdd(answer, expKey(w1), 1);
