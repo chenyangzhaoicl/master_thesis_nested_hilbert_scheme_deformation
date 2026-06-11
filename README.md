@@ -38,7 +38,11 @@ Checked 2455 nested fixed points.
 
 ## Interactive Playground
 
-Open `docs/young-diagram-playground.html` in a browser to explore:
+Play online here:
+
+https://felixzhao.com/young-diagram-playground.html
+
+The repository also keeps a standalone copy at `docs/young-diagram-playground.html` for reference. The playground lets you explore:
 
 - partitions and their monomial quotient bases,
 - removable corners of `lambda` as socle directions,
