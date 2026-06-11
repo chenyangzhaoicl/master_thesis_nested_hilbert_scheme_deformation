@@ -7,6 +7,7 @@ This repository contains the Macaulay2 verification code accompanying my master 
 ## Contents
 
 - `code/verify_weights.m2`: Macaulay2 script verifying the tangent-weight formula for monomial fixed points of the nested Hilbert scheme `Hilb^{n,n+1}(A^2)`.
+- `docs/young-diagram-playground.html`: interactive Young diagram playground for fixed-point monomial data and the row-and-column shortening rule.
 
 ## What The Script Checks
 
@@ -34,3 +35,12 @@ The expected final output is:
 All tests passed for |lambda| <= 16.
 Checked 2455 nested fixed points.
 ```
+
+## Interactive Playground
+
+Open `docs/young-diagram-playground.html` in a browser to explore:
+
+- partitions and their monomial quotient bases,
+- removable corners of `lambda` as socle directions,
+- addable boxes of `mu=lambda\c` as local-generator directions,
+- the nested tangent-weight shortening rule.
